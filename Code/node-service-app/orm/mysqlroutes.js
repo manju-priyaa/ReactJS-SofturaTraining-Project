@@ -73,24 +73,6 @@ route.get("/employees",async function(request,response){
   }
 })
 
-
-route.put("/updateEmployee", async function (request, response) {
-  try{
-    let employeeid = request.body.employeeid;
-    let lockstatus=request.body.lockstatus;
-    await sequelize.query("update employee set lockstatus = :lockstatus where employee_id = :employeeid",
-    {replacements: {employeeid: employeeid,lockstatus:lockstatus},model:employees,mapToModel: true,type:sequelize.QueryTypes.UPDATE}
-    ).then(function(employees){
-        response.status(200).send("record updated");
-    })
-}
-catch(e){
-    console.log(e)
-    response.status(500)
-}
-})
-
-
 route.put("/updateSoftlock",async function(request,response){
   try{
       let employeeid = request.body.employeeid;
@@ -100,12 +82,29 @@ route.put("/updateSoftlock",async function(request,response){
       ).then(function(){
           response.status(200).json()
       })
+      if(status=="Approved")
+      {
+        await sequelize.query("update employee set lockstatus = 'locked' where employee_id = :employeeid",
+        {replacements: {employeeid: employeeid}, model:employees,mapToModel: true,type:sequelize.QueryTypes.UPDATE}
+        ).then(function(){
+            response.status(200).json()
+        })
+      }
+      else
+      {
+        await sequelize.query("update employee set lockstatus = 'not_requested' where employee_id = :employeeid",
+        {replacements: {employeeid: employeeid}, model:employees,mapToModel: true,type:sequelize.QueryTypes.UPDATE}
+        ).then(function(){
+            response.status(200).json()
+        })
+      }
   }
   catch(e){
       console.log(e)
       response.status(500);
   }
 })
+
 
 
 module.exports=route;

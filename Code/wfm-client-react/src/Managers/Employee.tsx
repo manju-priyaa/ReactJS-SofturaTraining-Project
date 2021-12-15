@@ -61,6 +61,7 @@ const Employee = (props:any)=>{
               {
                 employeeid:id,manager:localStorage.getItem("username"),responsemessage: reqmessage});
             }
+            peopleRead();
             Setreqmessage('');
               
         }

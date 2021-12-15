@@ -53,15 +53,11 @@ const EmpRequest = (props:any)=>{
 
     async function addEmployee() {
         try {
-            console.log(Array[0],status)
-          const response = await axios.put("http://localhost:8000/employee/updateEmployee",
-          { employeeid : parseInt(Array[0]),status:status});
-          if(response.status === 200){
-            console.log(Array[0],status)
+
             const res = await axios.put("http://localhost:8000/employee/updateSoftlock",
-            { employeeid: parseInt(Array[0]),status:status});
-           
-          }      
+            { employeeid: parseInt(Array[0]),status:status});  
+            peopleRead();
+
         } 
         catch (e) {
           console.log("Error");
